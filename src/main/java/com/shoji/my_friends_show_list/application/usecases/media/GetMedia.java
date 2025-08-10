@@ -1,4 +1,4 @@
-package com.shoji.my_friends_show_list.application.usecases;
+package com.shoji.my_friends_show_list.application.usecases.media;
 
 import com.shoji.my_friends_show_list.application.gateways.MediaRepository;
 import com.shoji.my_friends_show_list.domain.models.media.Media;

@@ -1,0 +1,10 @@
+CREATE TABLE users (
+    id BIGSERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    alias VARCHAR(255),
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    phone VARCHAR(20),
+    profile_url VARCHAR(2048)
+);

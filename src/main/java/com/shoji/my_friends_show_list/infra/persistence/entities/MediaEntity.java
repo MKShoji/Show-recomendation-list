@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,7 +20,7 @@ public class MediaEntity {
     private Long id;
     private String title;
     private String description;
-    private LocalDate releaseDate;
+    private Date releaseDate;
     @Enumerated(EnumType.STRING)
     private MediaType mediaType;
 }

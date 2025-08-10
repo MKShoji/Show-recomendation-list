@@ -1,11 +1,14 @@
 package com.shoji.my_friends_show_list.domain.models.user;
 
-import java.util.Date;
+import java.time.LocalDate;
 
-public record User(
+public record User (
         Long id,
         String username,
         String alias,
-        String email
-) {
-}
+        String email,
+        String password,
+        LocalDate createdDate,
+        String phone,
+        String profileUrl
+) { }
