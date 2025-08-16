@@ -22,7 +22,8 @@ public class CreateUser {
                 creationDto.password(),
                 LocalDate.now(),
                 creationDto.phone(),
-                creationDto.profileUrl()
+                creationDto.profileUrl(),
+                null
         );
 
         return userGateway.createUser(user);

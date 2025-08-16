@@ -7,6 +7,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapperImp implements UserMapper {
 
+    private final RecommendationListMapper recommendationMapper;
+
+    public UserMapperImp(RecommendationListMapper recommendationMapper) {
+        this.recommendationMapper = recommendationMapper;
+    }
+
     @Override
     public User toDomain(UserEntity entity) {
         if (entity == null) return null;
@@ -19,7 +25,8 @@ public class UserMapperImp implements UserMapper {
                 entity.getPassword(),
                 entity.getCreatedDate(),
                 entity.getPhone(),
-                entity.getProfileUrl()
+                entity.getProfileUrl(),
+                entity.getMediaCollectionList().stream().map(recommendationMapper::toDomain).toList()
         );
     }
 
@@ -36,6 +43,11 @@ public class UserMapperImp implements UserMapper {
         entity.setCreatedDate(user.createdDate());
         entity.setPhone(user.phone());
         entity.setProfileUrl(user.profileUrl());
+        entity.setMediaCollectionList(
+                user.mediaCollectionList()
+                        .stream().map(recommendationMapper::toEntity)
+                        .toList()
+        );
 
         return entity;
     }

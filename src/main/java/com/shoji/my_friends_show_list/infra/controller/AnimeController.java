@@ -1,26 +1,40 @@
 package com.shoji.my_friends_show_list.infra.controller;
 
-import net.sandrohc.jikan.Jikan;
-import net.sandrohc.jikan.exception.JikanQueryException;
-import net.sandrohc.jikan.model.anime.Anime;
+import com.shoji.my_friends_show_list.application.usecases.media.GetMediaBySearch;
+import com.shoji.my_friends_show_list.application.usecases.media.GetMidiaByExternalId;
+import com.shoji.my_friends_show_list.domain.models.media.Media;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/animes")
 public class AnimeController {
 
-    @GetMapping("/animeById/{animeId}")
-    public ResponseEntity<Anime> getAnime(@PathVariable int animeId) {
-        Jikan jikan = new Jikan();
+    private final GetMidiaByExternalId getMidiaByExternalId;
+    private final GetMediaBySearch getMediaBySearch;
 
-        try {
-            Anime anime = jikan.query().anime().get(animeId).execute().block();
-            return ResponseEntity.ok(anime);
-        } catch (JikanQueryException e) {
-            return ResponseEntity.notFound().build();
+    public AnimeController(GetMidiaByExternalId getMidiaByExternalId, GetMediaBySearch getMediaBySearch) {
+        this.getMidiaByExternalId = getMidiaByExternalId;
+        this.getMediaBySearch = getMediaBySearch;
+    }
+
+    @GetMapping("/animeById/{animeId}")
+    public ResponseEntity<Media> getAnime(@PathVariable int animeId) {
+         return getMidiaByExternalId.execute(String.valueOf(animeId))
+                 .map(ResponseEntity::ok)
+                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Media>> searchAnime(@RequestParam String name) {
+        List<Media> results = getMediaBySearch.execute(name);
+
+        if(results.isEmpty()) {
+            return ResponseEntity.noContent().build();
         }
 
+        return ResponseEntity.ok().body(results);
     }
 }

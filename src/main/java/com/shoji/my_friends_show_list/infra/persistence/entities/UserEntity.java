@@ -4,8 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
-@Entity
+@Entity(name = "UserEntity")
 @Table(name = "users")
 @Getter
 @Setter
@@ -22,5 +23,8 @@ public class UserEntity {
     private LocalDate createdDate;
     private String phone;
     private String profileUrl;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecommendationListEntity> mediaCollectionList;
 
 }
