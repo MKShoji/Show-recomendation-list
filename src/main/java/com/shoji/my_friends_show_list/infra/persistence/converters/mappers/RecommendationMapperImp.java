@@ -1,10 +1,14 @@
 package com.shoji.my_friends_show_list.infra.persistence.converters.mappers;
 
+import com.shoji.my_friends_show_list.domain.models.mediaItem.MediaItem;
 import com.shoji.my_friends_show_list.domain.models.recommendation.RecommendationList;
+import com.shoji.my_friends_show_list.infra.persistence.converters.dtos.RecommendationRequestCreation;
+import com.shoji.my_friends_show_list.infra.persistence.converters.dtos.RecommendationResponseCreation;
 import com.shoji.my_friends_show_list.infra.persistence.entities.RecommendationListEntity;
 import com.shoji.my_friends_show_list.infra.persistence.entities.UserEntity;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -56,11 +60,38 @@ public class RecommendationMapperImp implements  RecommendationListMapper {
                 recommendationList.medias() == null
                         ? List.of()
                         : recommendationList.medias().stream()
-                        .map(mediaItemMapper::toEntity)
+                        .map(m -> mediaItemMapper.toEntity(m, entity))
                         .toList()
         );
 
         return entity;
+    }
+
+    @Override
+    public RecommendationList createRequestToDomain(RecommendationRequestCreation request) {
+        return new RecommendationList(
+                null,
+                request.ownerId(),
+                request.name(),
+                request.medias() == null ? List.of() :
+                    request.medias().stream()
+                            .map(m -> new MediaItem(
+                                    null,
+                                    m.externalId(),
+                                    m.mediaSource()
+                            )).toList(),
+                request.visibility(),
+                LocalDateTime.now()
+        );
+    }
+
+    @Override
+    public RecommendationResponseCreation domainToCreateResponse(RecommendationList createdList) {
+        return new RecommendationResponseCreation(
+                createdList.id(),
+                createdList.ownerId(),
+                createdList.createdAt().toLocalDate()
+        );
     }
 
 }

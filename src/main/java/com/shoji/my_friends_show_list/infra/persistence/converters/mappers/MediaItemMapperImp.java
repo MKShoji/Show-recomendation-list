@@ -10,19 +10,14 @@ import org.springframework.stereotype.Component;
 public class MediaItemMapperImp implements MediaItemMapper {
 
     @Override
-    public MediaItemEntity toEntity(MediaItem media) {
+    public MediaItemEntity toEntity(MediaItem media, RecommendationListEntity parent) {
         if (media == null) return null;
 
         MediaItemEntity entity = new MediaItemEntity();
         entity.setId(media.id());
-
-        if(media.recommendationListId() != null) {
-            RecommendationListEntity listEntity = new RecommendationListEntity();
-            listEntity.setId(media.recommendationListId());
-            entity.setRecommendationList(listEntity);
-        }
         entity.setExternalId(media.externalId());
         entity.setSource(media.mediaSource());
+        entity.setRecommendationList(parent);
 
         return entity;
     }
@@ -31,14 +26,8 @@ public class MediaItemMapperImp implements MediaItemMapper {
     public MediaItem toDomain(MediaItemEntity entity) {
         if (entity == null) return null;
 
-        Long recommendationListId = null;
-        if (entity.getRecommendationList() != null) {
-            recommendationListId = entity.getRecommendationList().getId();
-        }
-
         return new MediaItem(
                 entity.getId(),
-                recommendationListId,
                 entity.getExternalId(),
                 entity.getSource()
         );
