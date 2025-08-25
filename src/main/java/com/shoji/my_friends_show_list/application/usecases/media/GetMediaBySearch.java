@@ -1,6 +1,6 @@
 package com.shoji.my_friends_show_list.application.usecases.media;
 
-import com.shoji.my_friends_show_list.application.gateways.MediaGateway;
+import com.shoji.my_friends_show_list.domain.enums.MediaSource;
 import com.shoji.my_friends_show_list.domain.models.media.Media;
 import org.springframework.stereotype.Service;
 
@@ -9,13 +9,13 @@ import java.util.List;
 @Service
 public class GetMediaBySearch {
 
-    private final MediaGateway mediaGateway;
+    private final MediaGatewayFactory mediaGatewayFactory;
 
-    public GetMediaBySearch(MediaGateway mediaGateway) {
-        this.mediaGateway = mediaGateway;
+    public GetMediaBySearch(MediaGatewayFactory mediaGateway) {
+        this.mediaGatewayFactory = mediaGateway;
     }
 
-    public List<Media> execute(String query) {
-        return mediaGateway.search(query);
+    public List<Media> execute(String query, MediaSource source) {
+        return mediaGatewayFactory.exceute(source).search(query);
     }
 }

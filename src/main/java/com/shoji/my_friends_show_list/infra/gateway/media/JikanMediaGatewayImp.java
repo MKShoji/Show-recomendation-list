@@ -1,6 +1,7 @@
 package com.shoji.my_friends_show_list.infra.gateway.media;
 
-import com.shoji.my_friends_show_list.application.gateways.MediaGateway;
+import com.shoji.my_friends_show_list.application.gateways.MediaGatewayStrategy;
+import com.shoji.my_friends_show_list.domain.enums.MediaSource;
 import com.shoji.my_friends_show_list.domain.models.media.Media;
 import com.shoji.my_friends_show_list.infra.persistence.converters.mappers.AnimeMapper;
 import net.sandrohc.jikan.Jikan;
@@ -15,7 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
-public class JikanMediaGatewayImp implements MediaGateway {
+public class JikanMediaGatewayImp implements MediaGatewayStrategy {
 
     private final Jikan jikan;
     private final AnimeMapper animeMapper;
@@ -26,7 +27,12 @@ public class JikanMediaGatewayImp implements MediaGateway {
     }
 
     @Override
-    public Optional<Media> findByExternalId(String externalId) {
+    public boolean supports(MediaSource source) {
+        return MediaSource.MYANIMELIST.equals(source);
+    }
+
+    @Override
+    public Optional<Media> getMediaByExternalId(String externalId) {
         int jinkanId = Integer.parseInt(externalId);
 
         try {

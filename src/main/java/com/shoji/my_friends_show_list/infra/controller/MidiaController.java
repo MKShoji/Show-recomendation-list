@@ -1,7 +1,7 @@
 package com.shoji.my_friends_show_list.infra.controller;
 
-import com.shoji.my_friends_show_list.application.usecases.media.GetMediaBySearch;
 import com.shoji.my_friends_show_list.application.usecases.media.GetMediaByExternalId;
+import com.shoji.my_friends_show_list.application.usecases.media.GetMediaBySearch;
 import com.shoji.my_friends_show_list.domain.enums.MediaSource;
 import com.shoji.my_friends_show_list.domain.models.media.Media;
 import org.springframework.http.ResponseEntity;
@@ -10,27 +10,27 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/animes")
-public class AnimeController {
+@RequestMapping("/api/v1/midias")
+public class MidiaController {
 
     private final GetMediaByExternalId getMidiaByExternalId;
     private final GetMediaBySearch getMediaBySearch;
 
-    public AnimeController(GetMediaByExternalId getMidiaByExternalId, GetMediaBySearch getMediaBySearch) {
+    public MidiaController(GetMediaByExternalId getMidiaByExternalId, GetMediaBySearch getMediaBySearch) {
         this.getMidiaByExternalId = getMidiaByExternalId;
         this.getMediaBySearch = getMediaBySearch;
     }
 
-    @GetMapping("/animeById/{animeId}")
-    public ResponseEntity<Media> getAnime(@PathVariable int animeId) {
-         return getMidiaByExternalId.execute(String.valueOf(animeId), MediaSource.MYANIMELIST)
-                 .map(ResponseEntity::ok)
-                 .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/omdb/{imdbId}")
+    public ResponseEntity<Media> getMidiaImdb(@PathVariable String imdbId) {
+        return getMidiaByExternalId.execute(imdbId, MediaSource.IMDB)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/search")
+    @GetMapping("/omdb/search")
     public ResponseEntity<List<Media>> searchAnime(@RequestParam String name) {
-        List<Media> results = getMediaBySearch.execute(name, MediaSource.MYANIMELIST);
+        List<Media> results = getMediaBySearch.execute(name, MediaSource.IMDB);
 
         if(results.isEmpty()) {
             return ResponseEntity.noContent().build();
